@@ -1,0 +1,403 @@
+runtime! plugin/gf/user.vim
+
+function s:describe__gf_user_extend()  "{{{1
+  let d = gf#user#get_ext_dict()
+
+  It should register a given extension.
+
+  Should d ==# {}
+
+  call gf#user#extend('foo', 1000)
+  Should d['foo'] == 1000
+
+  call filter(d, '0')
+  Should d ==# {}
+
+  It should override an existing extension with the same name.
+
+  Should d ==# {}
+
+  call gf#user#extend('foo', 1000)
+  Should d['foo'] == 1000
+
+  call gf#user#extend('foo', 2000)
+  Should d['foo'] == 2000
+
+  call filter(d, '0')
+  Should d ==# {}
+endfunction
+
+
+
+
+function s:describe__gf_user_set_priority()  "{{{1
+  let d = gf#user#get_ext_dict()
+
+  It should set a priority to an existing extension.
+
+  Should d ==# {}
+
+  call gf#user#extend('foo', 1000)
+  Should d['foo'] == 1000
+
+  call gf#user#set_priority('foo', 2000)
+  Should d['foo'] == 2000
+
+  call filter(d, '0')
+  Should d ==# {}
+
+  It should raise an error if the target extension is not registered.
+
+  Should d ==# {}
+
+  let v:errmsg = ''
+  silent! call gf#user#set_priority('bar', 3000)
+  Should v:errmsg ==# "gf-user: Extension 'bar' is not registered."
+  Should d ==# {}
+endfunction
+
+
+
+
+function s:describe__gf_user_get_sorted_ext_list()  "{{{1
+  let d = gf#user#get_ext_dict()
+
+  It should return a list of extensions sorted by priority then by name.
+
+  Should d ==# {}
+
+  call gf#user#extend('foo', 1000)
+  call gf#user#extend('bar', 1000)
+  call gf#user#extend('baz', 2000)
+  call gf#user#extend('qux', 900)
+
+  Should gf#user#get_sorted_ext_list() ==# ['qux', 'bar', 'foo', 'baz']
+
+  call filter(d, '0')
+  Should d ==# {}
+endfunction
+
+
+
+
+function s:describe__gf_user_split()  "{{{1
+  It should not split anything for non-"gf" command.
+
+  let status = s:check_split("xyzzy")
+  Should status.new_wn == status.old_wn
+  Should status.new_wc == status.old_wc
+  Should status.new_tn == status.old_tn
+  Should status.new_tc == status.old_tc
+
+  It should not split anything for "gf".
+
+  let status = s:check_split("gf")
+  Should status.new_wn == status.old_wn
+  Should status.new_wc == status.old_wc
+  Should status.new_tn == status.old_tn
+  Should status.new_tc == status.old_tc
+
+  It should not split anything for "gF".
+
+  let status = s:check_split("gF")
+  Should status.new_wn == status.old_wn
+  Should status.new_wc == status.old_wc
+  Should status.new_tn == status.old_tn
+  Should status.new_tc == status.old_tc
+
+  It should split a window to the current tabpage for "\<C-w>f".
+
+  let status = s:check_split("\<C-w>f")
+  Should status.new_wn == status.old_wn
+  Should status.new_wc == status.old_wc + 1
+  Should status.new_tn == status.old_tn
+  Should status.new_tc == status.old_tc
+
+  It should split a window to the current tabpage for "\<C-w>\<C-f>".
+
+  let status = s:check_split("\<C-w>\<C-f>")
+  Should status.new_wn == status.old_wn
+  Should status.new_wc == status.old_wc + 1
+  Should status.new_tn == status.old_tn
+  Should status.new_tc == status.old_tc
+
+  It should split a window to the current tabpage for "\<C-w>F".
+
+  let status = s:check_split("\<C-w>F")
+  Should status.new_wn == status.old_wn
+  Should status.new_wc == status.old_wc + 1
+  Should status.new_tn == status.old_tn
+  Should status.new_tc == status.old_tc
+
+  It should split a window to a new tabpage for "\<C-w>gf".
+
+  let status = s:check_split("\<C-w>gf")
+  Should status.new_wn == 1
+  Should status.new_wc == 1
+  Should status.new_tn != status.old_tn
+  Should status.new_tc == status.old_tc + 1
+
+  It should split a window to a new tabpage for "\<C-w>gF".
+
+  let status = s:check_split("\<C-w>gf")
+  Should status.new_wn == 1
+  Should status.new_wc == 1
+  Should status.new_tn != status.old_tn
+  Should status.new_tc == status.old_tc + 1
+endfunction
+
+function s:check_split(gf_cmd)
+  let status = {}
+
+  let status['old_wn'] = winnr()
+  let status['old_wc'] = winnr('$')
+  let status['old_tn'] = tabpagenr()
+  let status['old_tc'] = tabpagenr('$')
+
+  call gf#user#split(a:gf_cmd)
+
+  let status['new_wn'] = winnr()
+  let status['new_wc'] = winnr('$')
+  let status['new_tn'] = tabpagenr()
+  let status['new_tc'] = tabpagenr('$')
+
+  silent tabonly!
+  silent only!
+
+  return status
+endfunction
+
+
+
+
+function s:describe__gf_user_try()  "{{{1
+  It should fail if a given function is failed to find a file.
+
+  Should gf#user#try('GfAlwaysFailureFind', 'gf') be false
+
+  It should open a path and move the cursor to a given position.
+
+  Should bufname('') ==# ''
+
+  silent let result = gf#user#try('GfSomePathL8C20Find', 'gf')
+  Should result be true
+  Should bufname('') ==# 'doc/gf-user.txt'
+  Should line('.') == 8
+  Should col('.') == 20
+
+  enew!
+  Should bufname('') ==# ''
+
+  It should open a path and move the cursor to the first non-blank character.
+
+  Should bufname('') ==# ''
+
+  silent let result = gf#user#try('GfSomePathL8C0Find', 'gf')
+  Should result be true
+  Should bufname('') ==# 'doc/gf-user.txt'
+  Should line('.') == 8
+  Should col('.') == 5
+  Should getline(line('.')) =~# '^\s\s\s\s\S'
+
+  enew!
+  Should bufname('') ==# ''
+
+  It should open a path which is neither a file nor a directory.
+
+  Should bufname('') ==# ''
+
+  silent let result = gf#user#try('GfNonExistingPathFind', 'gf')
+  Should result be true
+  Should bufname('') ==# 'foobarbaz'
+  Should line('.') == 1
+  Should col('.') == 1
+
+  enew!
+  Should bufname('') ==# ''
+
+  It should split a window if necessary.
+
+  Should bufname('') ==# ''
+
+  let old_wn = winnr()
+  let old_wc = winnr('$')
+  let old_tn = tabpagenr()
+  let old_tc = tabpagenr('$')
+  silent let result = gf#user#try('GfNonExistingPathFind', "\<C-w>f")
+  let new_wn = winnr()
+  let new_wc = winnr('$')
+  let new_tn = tabpagenr()
+  let new_tc = tabpagenr('$')
+  Should result be true
+  Should bufname('') ==# 'foobarbaz'
+  Should line('.') == 1
+  Should col('.') == 1
+  Should new_wn == old_wn
+  Should new_wc == old_wc + 1
+  Should new_tn == old_tn
+  Should new_tc == old_tc
+
+  only
+  enew!
+  Should bufname('') ==# ''
+  Should winnr('$') == 1
+endfunction
+
+function GfAlwaysFailureFind()
+  return 0
+endfunction
+
+function GfSomePathL8C20Find()
+  return {'path': 'doc/gf-user.txt', 'line': 8, 'col': 20}
+endfunction
+
+function GfSomePathL8C0Find()
+  return {'path': 'doc/gf-user.txt', 'line': 8, 'col': 0}
+endfunction
+
+function GfNonExistingPathFind()
+  return {'path': 'foobarbaz', 'line': 888, 'col': 888}
+endfunction
+
+
+
+
+function s:describe__gf_user_do()  "{{{1
+  let d = gf#user#get_ext_dict()
+
+  It should use the built-in command, then extensions.
+
+  Should d ==# {}
+
+  call gf#user#extend('GfPathAFind', 1000)
+  call gf#user#extend('GfPathBFind', 1000)
+  Should gf#user#get_sorted_ext_list() ==# ['GfPathAFind', 'GfPathBFind']
+
+  tabnew
+    Should bufname('') ==# ''
+
+    silent call gf#user#do('gf', 'n')
+    Should bufname('') ==# 'test-path-a'
+
+    call setline(1, 'doc/gf-user.txt')
+    normal! 1gg$
+    silent call gf#user#do("\<C-w>f", 'n')
+    Should bufname('') ==# 'doc/gf-user.txt'
+  only!
+  close!
+
+  It should be available in Visual mode.
+
+  tabnew
+    Should bufname('') ==# ''
+
+    call setline(1, 'doc/gf-user.txt')
+    normal! 1gg$vb
+    silent call gf#user#do("\<C-w>f", 'n')
+    Should bufname('') ==# 'test-path-a'
+  only!
+  close!
+
+  call filter(d, '0')
+  Should d ==# {}
+endfunction
+
+function GfPathAFind()
+  return {'path': 'test-path-a', 'line': 888, 'col': 888}
+endfunction
+
+function GfPathBFind()
+  return {'path': 'test-path-b', 'line': 888, 'col': 888}
+endfunction
+
+
+
+
+function s:describe__ui_key_mappings()  "{{{1
+  let d = gf#user#get_ext_dict()
+
+  It should use the built-in command, then extensions.
+
+  Should d ==# {}
+
+  call gf#user#extend('GfPathAFind', 1000)
+  call gf#user#extend('GfPathBFind', 1000)
+  Should gf#user#get_sorted_ext_list() ==# ['GfPathAFind', 'GfPathBFind']
+
+  tabnew
+    Should bufname('') ==# ''
+
+    execute "silent normal \<Plug>(gf-user-gf)"
+    Should bufname('') ==# 'test-path-a'
+
+    call setline(1, 'doc/gf-user.txt')
+    normal! 1gg$
+    execute "silent normal \<Plug>(gf-user-\<C-w>f)"
+    Should bufname('') ==# 'doc/gf-user.txt'
+  only!
+  close!
+
+  It should be available in Visual mode.
+
+  tabnew
+    Should bufname('') ==# ''
+
+    call setline(1, 'doc/gf-user.txt')
+    normal! 1gg$vb
+    execute "silent normal \<Plug>(gf-user-\<C-w>f)"
+    Should bufname('') ==# 'test-path-a'
+  only!
+  close!
+
+  call filter(d, '0')
+  Should d ==# {}
+endfunction
+
+
+
+
+function s:describe__default_key_mappings()  "{{{1
+  let d = gf#user#get_ext_dict()
+
+  It should use the built-in command, then extensions.
+
+  Should d ==# {}
+
+  call gf#user#extend('GfPathAFind', 1000)
+  call gf#user#extend('GfPathBFind', 1000)
+  Should gf#user#get_sorted_ext_list() ==# ['GfPathAFind', 'GfPathBFind']
+
+  tabnew
+    Should bufname('') ==# ''
+
+    execute "silent normal gf"
+    Should bufname('') ==# 'test-path-a'
+
+    call setline(1, 'doc/gf-user.txt')
+    normal! 1gg$
+    execute "silent normal \<C-w>f"
+    Should bufname('') ==# 'doc/gf-user.txt'
+  only!
+  close!
+
+  It should be available in Visual mode.
+
+  tabnew
+    Should bufname('') ==# ''
+
+    call setline(1, 'doc/gf-user.txt')
+    normal! 1gg$vb
+    execute "silent normal \<C-w>f"
+    Should bufname('') ==# 'test-path-a'
+  only!
+  close!
+
+  call filter(d, '0')
+  Should d ==# {}
+endfunction
+
+
+
+
+" __END__  "{{{1
+" vim: filetype=vim foldmethod=marker
