@@ -55,22 +55,24 @@ lockvar s:ext_priority_divider
 
 
 function! gf#user#do(gf_cmd, mode)  "{{{2
-  let [ext_pre, ext_post] = gf#user#get_sorted_ext_list()
+  let [ext_pre_builtin, ext_post_builtin] = gf#user#get_sorted_ext_list()
 
-  for funcname in ext_pre
+  " 1. preceding built-in
+  for funcname in ext_pre_builtin
     if gf#user#try(funcname, a:gf_cmd)
       return
     endif
   endfor
-
   try
+    " 2. built-in |gf|
     if a:mode ==# 'v'
       normal! gv
     endif
     execute 'normal!' a:gf_cmd
     return
   catch /\C\V\^Vim\%((\a\+)\)\?:\(E446\|E447\):/
-    for funcname in ext_post
+    " 3. post built-in
+    for funcname in ext_post_builtin
       if gf#user#try(funcname, a:gf_cmd)
         return
       endif
