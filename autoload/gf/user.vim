@@ -50,19 +50,29 @@ endfunction
 if !exists('s:ext_dict')
   let s:ext_dict = {}  " FuncName -> Priority
 endif
-
-
+let s:ext_priority_divider = 1000
+lockvar s:ext_priority_divider
 
 
 function! gf#user#do(gf_cmd, mode)  "{{{2
+  let [ext_pre_builtin, ext_post_builtin] = gf#user#get_sorted_ext_list()
+
+  " 1. preceding built-in
+  for funcname in ext_pre_builtin
+    if gf#user#try(funcname, a:gf_cmd)
+      return
+    endif
+  endfor
   try
+    " 2. built-in |gf|
     if a:mode ==# 'v'
       normal! gv
     endif
     execute 'normal!' a:gf_cmd
     return
   catch /\C\V\^Vim\%((\a\+)\)\?:\(E446\|E447\):/
-    for funcname in gf#user#get_sorted_ext_list()
+    " 3. post built-in
+    for funcname in ext_post_builtin
       if gf#user#try(funcname, a:gf_cmd)
         return
       endif
@@ -84,16 +94,30 @@ endfunction
 
 
 function! gf#user#get_sorted_ext_list()  "{{{2
+  let s =
+  \  sort(
+  \    map(
+  \      keys(s:ext_dict),
+  \      '[printf("%06d %s", s:ext_dict[v:val], v:val), v:val, s:ext_dict[v:val]]'
+  \    )
+  \  )
   return
-  \ map(
-  \   sort(
-  \     map(
-  \       keys(s:ext_dict),
-  \       '[printf("%06d %s", s:ext_dict[v:val], v:val), v:val]'
-  \     )
+  \ [
+  \   map(
+  \     filter(
+  \       copy(s),
+  \       'v:val[2] < ' . s:ext_priority_divider
+  \     ),
+  \     'v:val[1]'
   \   ),
-  \   'v:val[1]'
-  \ )
+  \   map(
+  \     filter(
+  \       copy(s),
+  \       'v:val[2] >= ' . s:ext_priority_divider
+  \     ),
+  \     'v:val[1]'
+  \   ),
+  \ ]
 endfunction
 
 

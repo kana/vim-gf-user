@@ -166,14 +166,16 @@ Basics:
 - An extension has a priority which is an integer.
 - A priority is to control the order of extension functions to be used.
 - Registered extension functions are sorted by priority, then sorted by name.
-- The built-in functions such as |gf| is used at the first.  Extensions are
-  used if the built-in functions fail to find the file to be opened.
+
+- Extensions and built-in |gf| functions are tried in the following order:
+
+  [priority < 1000] --> built-in |gf| --> [priority >= 1000]
 
 Conventions:
 
-- Use 1000 if an extension uses only the text at the cursor line.
-- Use 2000 if an extension uses text around the cursor.
-- Use 3000 if an extension does not use text in the current buffer.
+- Use 100/1000 if an extension uses only the text at the cursor line.
+- Use 200/2000 if an extension uses text around the cursor.
+- Use 300/3000 if an extension does not use text in the current buffer.
 
 
 
