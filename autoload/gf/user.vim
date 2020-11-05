@@ -56,7 +56,7 @@ endif
 
 function! gf#user#do(gf_cmd, mode)  "{{{2
   try
-    if a:mode ==# 'v'
+    if a:mode ==# 'x'
       normal! gv
     endif
     execute 'normal!' a:gf_cmd
