@@ -33,7 +33,7 @@ function! s:define_ui_key_mappings()
   for gf_cmd in ['gf', 'gF',
   \              '<C-w>f', '<C-w><C-f>', '<C-w>F',
   \              '<C-w>gf', '<C-w>gF']
-    for mode_char in ['n', 'v']
+    for mode_char in ['n', 'x']
       execute printf(
       \   '%snoremap <Plug>(%s-%s) :<C-u>call gf#user#do("%s", "%s")<CR>',
       \   mode_char,
@@ -52,18 +52,12 @@ call s:define_ui_key_mappings()
 
 command! -bang -bar -nargs=0 GfUserDefaultKeyMappings
 \ call s:cmd_GfUserDefaultKeyMappings(<bang>0)
-
-let s:mapcmd = ['nmap', 'vmap']
-if exists(':xmap') == 2
-  let s:mapcmd = ['nmap', 'xmap']
-endif
-
 function! s:cmd_GfUserDefaultKeyMappings(banged_p)
   let modifier = a:banged_p ? '' : '<unique>'
   for gf_cmd in ['gf', 'gF',
   \              '<C-w>f', '<C-w><C-f>', '<C-w>F',
   \              '<C-w>gf', '<C-w>gF']
-    for map_cmd in s:mapcmd
+    for map_cmd in ['nmap', 'xmap']
       execute printf('silent! %s %s %s  <Plug>(gf-user-%s)',
       \              map_cmd,
       \              modifier,
