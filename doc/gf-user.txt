@@ -1,6 +1,6 @@
 *gf-user.txt*	A framework to open a file by context
 
-Version @@VERSION@@
+Version 0.0.0
 Script ID: 3891
 Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 License: So-called MIT/X license  {{{

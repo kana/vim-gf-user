@@ -1,5 +1,5 @@
 " gf-user - A framework to open a file by context
-" Version: @@VERSION@@
+" Version: 0.0.0
 " Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 " License: So-called MIT/X license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
