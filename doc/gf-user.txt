@@ -31,7 +31,6 @@ Interface               |gf-user-interface|
   Functions               |gf-user-functions|
   Key Mappings            |gf-user-key-mappings|
 Customization             |gf-user-customization|
-Examples                |gf-user-examples|
 Bugs                    |gf-user-bugs|
 Changelog               |gf-user-changelog|
 
@@ -62,10 +61,7 @@ Requirements:
 - Vim 7.3 or later
 
 Latest version:
-http://github.com/kana/vim-gf-user
-
-Document in HTML format:
-http://kana.github.com/config/vim/gf-user.html
+https://github.com/kana/vim-gf-user
 
 
 
@@ -179,23 +175,19 @@ Conventions:
 
 
 ==============================================================================
-EXAMPLES					*gf-user-examples*
-
-(A) ...
-
-
-
-
-==============================================================================
 BUGS						*gf-user-bugs*
 
 - Currently there is no known issue.
+- See also https://github.com/kana/vim-gf-user/issues
 
 
 
 
 ==============================================================================
 CHANGELOG					*gf-user-changelog*
+
+0.0.1	2023-05-11T17:51:56+09:00		*gf-user-changelog-0.0.1*
+	- Rewrite tests.
 
 0.0.0	2012-01-12T19:29:33+09:00		*gf-user-changelog-0.0.0*
 	- Initial version.
