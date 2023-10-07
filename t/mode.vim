@@ -5,15 +5,20 @@ runtime! plugin/gf/user.vim
 " Therefore mode() returns 'ce' instead of 'n'.
 let g:EXPECTED_NORMAL_MODE = 'ce'
 
-function GfUserExtensionFunctionSample()
+function GfSuccess()
   let t:mode = mode(1)
   return {'path': 'test-path-a', 'line': 888, 'col': 888}
+endfunction
+
+function GfFailure()
+  let t:mode = mode(1)
+  return 0
 endfunction
 
 describe 'Extension function'
   before
     new
-    call gf#user#extend('GfUserExtensionFunctionSample', 1000)
+    call gf#user#extend('GfSuccess', 1000)
   end
 
   after
@@ -45,11 +50,6 @@ describe 'Extension function'
   end
 end
 
-function GfFailure()
-  let t:mode = mode(1)
-  return 0
-endfunction
-
 describe 'gf-user'
   before
     new
@@ -68,6 +68,24 @@ describe 'gf-user'
     Expect bufname('') ==# 'doc/gf-user.txt'
 
     execute 'silent normal Vgf'
+    Expect bufname('') ==# 'doc/gf-user.txt'
+    Expect t:mode ==# 'V'
+    Expect mode(1) ==# g:EXPECTED_NORMAL_MODE
+  end
+
+  it 'clears Visual mode if unexpected error occurs'
+    call gf#user#extend('GfSuccess', 1000)
+
+    tabnew doc/gf-user.txt
+    let t:mode = 'not executed'
+    Expect bufname('') ==# 'doc/gf-user.txt'
+
+    put ='xyzzy'
+    try
+      execute 'silent normal Vgf'
+    catch
+      Expect v:exception ==# 'Vim(edit):E37: No write since last change (add ! to override)'
+    endtry
     Expect bufname('') ==# 'doc/gf-user.txt'
     Expect t:mode ==# 'V'
     Expect mode(1) ==# g:EXPECTED_NORMAL_MODE

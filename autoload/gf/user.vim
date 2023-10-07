@@ -59,6 +59,8 @@ function! gf#user#do(gf_cmd, mode)  "{{{2
     execute 'normal!' a:gf_cmd
     return
   catch /\C\V\^Vim\%((\a\+)\)\?:\(E446\|E447\):/
+    let last_exception = v:exception
+
     if a:mode ==# 'x'
       " If built-in gf commands fail in Visual mode, it clears Visual mode.
       " So Visual mode must be restarted for extension functions which may
@@ -66,11 +68,15 @@ function! gf#user#do(gf_cmd, mode)  "{{{2
       normal! gv
     endif
 
-    for funcname in gf#user#get_sorted_ext_list()
-      if gf#user#try(funcname, a:gf_cmd)
-        return
-      endif
-    endfor
+    try
+      for funcname in gf#user#get_sorted_ext_list()
+        if gf#user#try(funcname, a:gf_cmd)
+          return
+        endif
+      endfor
+    catch
+      let last_exception = v:exception
+    endtry
 
     if a:mode ==# 'x'
       " To behave like built-in gf commands, Visual mode should be cleared
@@ -79,7 +85,7 @@ function! gf#user#do(gf_cmd, mode)  "{{{2
     endif
 
     echohl ErrorMsg
-    echomsg substitute(v:exception, '\C^Vim.\{-}:', '', '')
+    echomsg substitute(last_exception, '\C^Vim.\{-}:', '', '')
     echohl NONE
   endtry
 endfunction
