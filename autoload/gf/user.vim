@@ -71,6 +71,13 @@ function! gf#user#do(gf_cmd, mode)  "{{{2
         return
       endif
     endfor
+
+    if a:mode ==# 'x'
+      " To behave like built-in gf commands, Visual mode should be cleared
+      " if all extension functions fail.
+      execute 'normal!' "\<C-\>\<C-n>"
+    endif
+
     echohl ErrorMsg
     echomsg substitute(v:exception, '\C^Vim.\{-}:', '', '')
     echohl NONE
