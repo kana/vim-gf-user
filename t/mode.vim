@@ -24,7 +24,10 @@ describe 'Extension function'
 
     execute 'silent normal gf'
     Expect bufname('') ==# 'test-path-a'
-    Expect t:mode ==# 'n'
+    " The expected value should be 'n'.
+    " But this test is executed via vspec which runs Vim in Ex mode.
+    " Therefore mode() returns 'ce' instead of 'n'.
+    Expect t:mode ==# 'ce'
   end
 
   it 'correctly detects the current mode (Visual mode)'
