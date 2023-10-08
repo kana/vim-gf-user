@@ -58,7 +58,7 @@ synthesize all extensions.  |gf-user| provides a framework for the extensions.
 
 
 Requirements:
-- Vim 7.3 or later
+- Vim 8.2.1978 or later
 
 Latest version:
 https://github.com/kana/vim-gf-user
@@ -177,7 +177,8 @@ Conventions:
 ==============================================================================
 BUGS						*gf-user-bugs*
 
-- Currently there is no known issue.
+- Errors which occur in Visual mode like |v_gf| might not be displayed or
+  might be displayed with |v:throwpoint|, depending on the situation.
 - See also https://github.com/kana/vim-gf-user/issues
 
 
@@ -185,6 +186,11 @@ BUGS						*gf-user-bugs*
 
 ==============================================================================
 CHANGELOG					*gf-user-changelog*
+
+1.0.0	2023-10-08T12:19:46+09:00		*gf-user-changelog-0.1.0*
+	- Change required Vim version to 8.2.1978 or later.
+        - Fix |mode()| to return the correct mode within
+          |gf-user-extension-function|.
 
 0.0.1	2023-05-11T17:51:56+09:00		*gf-user-changelog-0.0.1*
 	- Rewrite tests.
