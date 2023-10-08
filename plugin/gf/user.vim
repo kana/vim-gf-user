@@ -35,7 +35,7 @@ function! s:define_ui_key_mappings()
   \              '<C-w>gf', '<C-w>gF']
     for mode_char in ['n', 'x']
       execute printf(
-      \   '%snoremap <Plug>(%s-%s) :<C-u>call gf#user#do("%s", "%s")<CR>',
+      \   '%snoremap <Plug>(%s-%s) <Cmd>call gf#user#do("%s", "%s")<CR>',
       \   mode_char,
       \   'gf-user',
       \   gf_cmd,
