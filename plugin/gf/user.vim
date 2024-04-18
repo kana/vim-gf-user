@@ -50,11 +50,11 @@ call s:define_ui_key_mappings()
 
 
 
-command! -bang -nargs=* GfUserDefaultKeyMappings
+command! -bang -bar -nargs=* GfUserDefaultKeyMappings
 \ call s:cmd_GfUserDefaultKeyMappings(<bang>0, <q-args>)
 function! s:cmd_GfUserDefaultKeyMappings(banged_p, args)
   let modifier  = a:banged_p ? '' : '<unique>'
-  let modifier .= substitute(a:args, '\S\+', '<\0>', 'g')
+  let modifier .= a:args
   for gf_cmd in ['gf', 'gF',
   \              '<C-w>f', '<C-w><C-f>', '<C-w>F',
   \              '<C-w>gf', '<C-w>gF']

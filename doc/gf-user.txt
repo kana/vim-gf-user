@@ -70,6 +70,26 @@ https://github.com/kana/vim-gf-user
 INTERFACE					*gf-user-interface*
 
 ------------------------------------------------------------------------------
+COMMANDS					*gf-user-commands*
+
+:GfUserDefaultKeyMappings[!] [args]            *:GfUserDefaultKeyMappings*
+
+    Define the default key mappings.  If [!] is given, redefine the
+    default key mappings.  This command doesn't override existing {lhs}s
+    unless [!] is given.
+    Accepts optional arguments [args] such as <buffer> or <nowait> that are
+    passed to nmap and xmap mapping <Plug>(gf-user-gf), <Plug>(gf-user-gF),
+    <Plug>(gf-user-<C-w>f), ... to the corresponding gf, gF, CTRL-W_f, ...
+    mappings.
+
+    For example, the default mappings can be added buffer-locally to all
+    buffers of filetype diff by adding the following to your |vimrc|:
+>
+    let g:gf_user_no_default_key_mappings = 1
+    autocmd FileType diff GfUserDefaultKeyMappings! <buffer>
+<
+
+------------------------------------------------------------------------------
 FUNCTIONS					*gf-user-functions*
 
 gf#user#extend({funcname}, {priority})		*gf#user#extend()*
