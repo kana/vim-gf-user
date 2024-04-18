@@ -28,6 +28,7 @@ CONTENTS					*gf-user-contents*
 
 Introduction            |gf-user-introduction|
 Interface               |gf-user-interface|
+  Commands                |gf-user-commands|
   Functions               |gf-user-functions|
   Key Mappings            |gf-user-key-mappings|
 Customization             |gf-user-customization|
@@ -207,7 +208,10 @@ BUGS						*gf-user-bugs*
 ==============================================================================
 CHANGELOG					*gf-user-changelog*
 
-1.0.0	2023-10-08T12:19:46+09:00		*gf-user-changelog-0.1.0*
+1.1.0	2024-04-18T15:38:22+09:00		*gf-user-changelog-1.0.0*
+        - |GfUserDefaultKeyMappings|: Support modifiers such as <buffer>.
+
+1.0.0	2023-10-08T12:19:46+09:00		*gf-user-changelog-1.0.0*
 	- Change required Vim version to 8.2.1978 or later.
         - Fix |mode()| to return the correct mode within
           |gf-user-extension-function|.
