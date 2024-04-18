@@ -363,3 +363,36 @@ describe 'Default key mappings'
     Expect bufname('') ==# 'test-path-a'
   end
 end
+
+describe 'GfUserDefaultKeyMappings'
+  before
+    new
+    call gf#user#extend('GfPathAFind', 1000)
+    call gf#user#extend('GfPathBFind', 1000)
+  end
+
+  after
+    let b:d = gf#user#get_ext_dict()
+    call filter(b:d, '0')
+    %bwipeout!
+  end
+
+  it 'supports modifiers'
+    tabnew
+    Expect bufname('') ==# ''
+
+    nnoremap <buffer> gf gf
+    execute "silent! normal gf"
+    Expect bufname('') ==# ''
+    Expect v:errmsg ==# 'E446: No file name under cursor'
+
+    GfUserDefaultKeyMappings <buffer>
+    execute "silent! normal gf"
+    Expect bufname('') ==# ''
+    Expect v:errmsg ==# 'E446: No file name under cursor'
+
+    GfUserDefaultKeyMappings! <buffer>
+    execute "silent normal gf"
+    Expect bufname('') ==# 'test-path-a'
+  end
+end
