@@ -111,7 +111,7 @@ gf#user#set_priority({funcname}, {priority})	*gf#user#set_priority()*
 KEY MAPPINGS					*gf-user-key-mappings*
 
 					   *g:gf_user_no_default_key_mappings*
-						*:GfUserDefaultKeyMappings*
+
 This plugin will define the following key mappings.  If you don't want to
 define these default key mappings, define |g:gf_user_no_default_key_mappings|
 before this plugin is loaded (e.g. in your |vimrc|).  You can also use
@@ -208,7 +208,7 @@ BUGS						*gf-user-bugs*
 ==============================================================================
 CHANGELOG					*gf-user-changelog*
 
-1.1.0	2024-04-18T15:38:22+09:00		*gf-user-changelog-1.0.0*
+1.1.0	2024-04-18T15:38:22+09:00		*gf-user-changelog-1.1.0*
         - |GfUserDefaultKeyMappings|: Support modifiers such as <buffer>.
 
 1.0.0	2023-10-08T12:19:46+09:00		*gf-user-changelog-1.0.0*
