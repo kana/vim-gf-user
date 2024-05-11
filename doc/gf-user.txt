@@ -52,7 +52,7 @@ file to be opened and the initial cursor position.  For example,
 
 - While reading output from diff(1), go to the hunk under the cursor.
 - While editing files for an MVC framework, go to the view file corresponding
-  to an action of the controller under the cursor. 
+  to an action of the controller under the cursor.
 
 Though it's not hard to implement each extension, it's a bit troublesome to
 synthesize all extensions.  |gf-user| provides a framework for the extensions.
@@ -111,7 +111,6 @@ gf#user#set_priority({funcname}, {priority})	*gf#user#set_priority()*
 KEY MAPPINGS					*gf-user-key-mappings*
 
 					   *g:gf_user_no_default_key_mappings*
-						*:GfUserDefaultKeyMappings*
 This plugin will define the following key mappings.  If you don't want to
 define these default key mappings, define |g:gf_user_no_default_key_mappings|
 before this plugin is loaded (e.g. in your |vimrc|).  You can also use
