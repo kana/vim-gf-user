@@ -1,9 +1,10 @@
 runtime! plugin/gf/user.vim
 
-" The expected value should be 'n'.
-" But this test is executed via vspec which runs Vim in Ex mode.
-" Therefore mode() returns 'ce' instead of 'n'.
-let g:EXPECTED_NORMAL_MODE = 'ce'
+" Dummy expected values to pass tests.
+" This test script is executed via vspec which runs Vim in Ex mode.
+" Therefore mode() always returns 'ce'.
+let g:EXPECTED_NORMAL_MODE = 'ce'  " 'n'
+let g:EXPECTED_VISUAL_MODE = 'ce'  " 'V'
 
 function GfSuccess()
   let t:mode = mode(1)
@@ -45,7 +46,7 @@ describe 'Extension function'
 
     execute 'silent normal Vgf'
     Expect bufname('') ==# 'test-path-a'
-    Expect t:mode ==# 'V'
+    Expect t:mode ==# g:EXPECTED_VISUAL_MODE
     Expect mode(1) ==# g:EXPECTED_NORMAL_MODE
   end
 end
@@ -69,7 +70,7 @@ describe 'gf-user'
 
     execute 'silent normal Vgf'
     Expect bufname('') ==# 'doc/gf-user.txt'
-    Expect t:mode ==# 'V'
+    Expect t:mode ==# g:EXPECTED_VISUAL_MODE
     Expect mode(1) ==# g:EXPECTED_NORMAL_MODE
   end
 
@@ -87,7 +88,7 @@ describe 'gf-user'
       Expect v:exception ==# 'Vim(edit):E37: No write since last change (add ! to override)'
     endtry
     Expect bufname('') ==# 'doc/gf-user.txt'
-    Expect t:mode ==# 'V'
+    Expect t:mode ==# g:EXPECTED_VISUAL_MODE
     Expect mode(1) ==# g:EXPECTED_NORMAL_MODE
   end
 end
